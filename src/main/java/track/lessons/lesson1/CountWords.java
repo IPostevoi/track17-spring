@@ -64,27 +64,20 @@ public class CountWords {
      */
     public String concatWords(File file) throws Exception {
         String dirPath = file.getAbsolutePath();
-        BufferedReader br = new BufferedReader( new FileReader(dirPath));
+        BufferedReader br = new BufferedReader(new FileReader(dirPath));
+        boolean flag = false;
         String line;
         String string = "";
         while ((line = br.readLine()) != null) {
+
             if (!isNumeric(line) && !line.isEmpty()) {
-                string = string + line + ' ';
+                if (flag)
+                    string += ' ';
+                string += line;
+                flag = true;
             }
         }
         return string;
     }
-
-    /**public static void main(String[] args) throws Exception {
-        CountWords test = new CountWords();
-        String dirPath = ;
-        File file = new File(dirPath);
-        long count = test.countNumbers(file);
-        String str = test.concatWords(file);
-        System.out.println(count);
-        System.out.println(str);
-
-    }
-    **/
 }
 
