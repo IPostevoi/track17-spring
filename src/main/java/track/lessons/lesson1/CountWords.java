@@ -42,7 +42,8 @@ public class CountWords {
      * @return - целое число - сумма всех чисел из файла
      */
     public long countNumbers(File file) throws Exception {
-        BufferedReader br = new BufferedReader ( new FileReader("/home/bakla410/Desktop/TechnotrackJava/track17/words.txt"));
+        BufferedReader br = new BufferedReader( new FileReader("/home/bakla410/Desktop/" + //
+                                                                        "TechnotrackJava/track17/words.txt"));
         String line;
         int sum = 0;
         while ((line = br.readLine()) != null) {
@@ -62,7 +63,8 @@ public class CountWords {
      * @return - результирующая строка
      */
     public String concatWords(File file) throws Exception {
-        BufferedReader br = new BufferedReader ( new FileReader("/home/bakla410/Desktop/TechnotrackJava/track17/words.txt"));
+        BufferedReader br = new BufferedReader( new FileReader("/home/bakla410/Desktop/" + //
+                                                                        "TechnotrackJava/track17/words.txt"));
         String line;
         String string = "";
         while ((line = br.readLine()) != null) {
@@ -73,7 +75,7 @@ public class CountWords {
         return string;
     }
 
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
         CountWords test = new CountWords();
         String dirPath = "/home/bakla410/Desktop/TechnotrackJava/track17/words.txt";
         File file = new File(dirPath);
