@@ -71,8 +71,9 @@ public class CountWords {
         while ((line = br.readLine()) != null) {
 
             if (!isNumeric(line) && !line.isEmpty()) {
-                if (flag)
+                if (flag) {
                     string += ' ';
+                }
                 string += line;
                 flag = true;
             }
