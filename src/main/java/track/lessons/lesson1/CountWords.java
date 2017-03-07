@@ -25,6 +25,8 @@ import java.io.*;
  */
 public class CountWords {
 
+    static boolean count = false;
+
     public static boolean isNumeric(String str) {
         try {
             Integer.parseInt(str);
@@ -65,19 +67,20 @@ public class CountWords {
     public String concatWords(File file) throws Exception {
         String dirPath = file.getAbsolutePath();
         BufferedReader br = new BufferedReader(new FileReader(dirPath));
-        boolean flag = false;
         String line;
         String string = "";
         while ((line = br.readLine()) != null) {
 
             if (!isNumeric(line) && !line.isEmpty()) {
-                if (flag) {
-                    string += ' ';
+                if (!count) {
+                    string += line;
+                    count = true;
+                } else {
+                    string = string + ' ' + line;
                 }
-                string += line;
-                flag = true;
             }
         }
+        br.close();
         return string;
     }
 }
