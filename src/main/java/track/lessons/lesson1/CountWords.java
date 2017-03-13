@@ -73,10 +73,10 @@ public class CountWords {
         while ((line = br.readLine()) != null) {
 
             if (!isNumeric(line) && !line.isEmpty()) {
-                    string.append(line);
-                    string.append(" ");
-                }
+                string.append(line);
+                string.append(" ");
             }
+        }
         br.close();
 
         return string.toString().trim();
