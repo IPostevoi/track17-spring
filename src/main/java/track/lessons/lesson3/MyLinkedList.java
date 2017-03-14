@@ -6,7 +6,8 @@ import java.util.NoSuchElementException;
  * Должен наследовать List
  * Односвязный список
  */
-public class MyLinkedList extends List {
+
+public class MyLinkedList extends List implements Stack, Queue {
 
     /**
      * private - используется для сокрытия этого класса от других.
