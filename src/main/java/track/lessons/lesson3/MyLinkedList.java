@@ -7,7 +7,7 @@ import java.util.NoSuchElementException;
  * Односвязный список
  */
 
-public class MyLinkedList extends List implements Stack, Queue {
+public class MyLinkedList extends List implements Queue {
 
     /**
      * private - используется для сокрытия этого класса от других.
@@ -15,6 +15,14 @@ public class MyLinkedList extends List implements Stack, Queue {
      * <p>
      * static - позволяет использовать Node без создания экземпляра внешнего класса
      */
+    @Override
+    public void enqueue(int value){}
+
+    @Override
+    public int dequeu(){
+        return 0;
+    }
+
     private static class Node {
         Node prev;
         Node next;
