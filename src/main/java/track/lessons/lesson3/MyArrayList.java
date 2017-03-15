@@ -13,9 +13,9 @@ import java.util.NoSuchElementException;
  */
 public class MyArrayList extends List {
 
-    int iter = 0;
+    private int iter = 0;
 
-    public int[] mass;
+    private int[] mass;
 
     public MyArrayList() {
         mass = new int[0];
@@ -26,7 +26,7 @@ public class MyArrayList extends List {
     }
 
     @Override
-    void add(int item) {
+    public void add(int item) {
         if (mass.length <= iter) {
             int[] tempMass = mass;
             mass = new int[tempMass.length  * 2 + 1];
@@ -40,7 +40,7 @@ public class MyArrayList extends List {
     }
 
     @Override
-    int remove(int idx) throws NoSuchElementException {
+    public int remove(int idx) throws NoSuchElementException {
         if (idx < mass.length) {
             iter -= 1;
             int temp = mass[idx];
@@ -52,7 +52,7 @@ public class MyArrayList extends List {
     }
 
     @Override
-    int get(int idx) throws NoSuchElementException {
+    public int get(int idx) throws NoSuchElementException {
         if (idx < mass.length) {
             return mass[idx];
         } else {
@@ -61,7 +61,7 @@ public class MyArrayList extends List {
     }
 
     @Override
-    int size() {
+    public int size() {
         return iter;
     }
 }

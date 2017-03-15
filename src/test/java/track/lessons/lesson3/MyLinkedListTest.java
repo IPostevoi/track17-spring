@@ -46,6 +46,11 @@ public class MyLinkedListTest {
         list.remove(0);
 
         Assert.assertTrue(list.size() == 0);
+
+        list.add(1);
+        list.add(2);
+        list.remove(0);
+        Assert.assertEquals(2, list.remove(0));
     }
 
     @Test
@@ -55,5 +60,37 @@ public class MyLinkedListTest {
         list.remove(0);
 
         Assert.assertTrue(list.size() == 0);
+    }
+
+    @Test
+    public void stackPushPop() throws  Exception {
+        MyLinkedList list = new MyLinkedList();
+        list.push(1);
+        list.push(2);
+        list.push(3);
+
+        Assert.assertEquals(3, list.get(2));
+        Assert.assertTrue(list.size() == 3);
+
+        list.pop();
+        list.pop();
+        Assert.assertTrue(list.size() == 1);
+        Assert.assertEquals(1, list.pop());
+    }
+
+    @Test
+    public void queueEnqDeq() throws  Exception {
+        MyLinkedList list = new MyLinkedList();
+        list.enqueue(1);
+        list.enqueue(2);
+        list.enqueue(3);
+
+        Assert.assertEquals(3, list.get(2));
+        Assert.assertTrue(list.size() == 3);
+
+        list.dequeu();
+        list.dequeu();
+        Assert.assertTrue(list.size() == 1);
+        Assert.assertEquals(3, list.dequeu());
     }
 }

@@ -16,9 +16,9 @@ public class MyLinkedList extends List implements Queue, Stack {
      * static - позволяет использовать Node без создания экземпляра внешнего класса
      */
 
-    int iter = 0;
-    Node last = null;
-    Node first = null;
+    private int iter = 0;
+    private Node last = null;
+    private Node first = null;
 
 
     @Override
@@ -40,20 +40,33 @@ public class MyLinkedList extends List implements Queue, Stack {
 
     @Override
     public void push(int value) {
-        Node node = new Node(last, null, value);
-        last.next = node;
-        last = node;
-        iter += 1;
+        if (iter == 0) {
+            first = new Node(null, null, value);
+            last = first;
+            iter += 1;
+        } else {
+            Node node = new Node(last, null, value);
+            last.next = node;
+            last = node;
+            iter += 1;
+        }
     }
 
     @Override
     public int pop() {
-        Node previous = last.prev;
-        previous.next = null;
-        int value = last.val;
-        last = null;
-        iter -= 1;
-        return  value;
+        if (last != first) {
+            Node previous = last.prev;
+            previous.next = null;
+            int value = last.val;
+            last = previous;
+            iter -= 1;
+            return value;
+        } else {
+            int value = last.val;
+            last = null;
+            iter -= 1;
+            return value;
+        }
     }
 
 
@@ -70,46 +83,44 @@ public class MyLinkedList extends List implements Queue, Stack {
     }
 
     @Override
-    void add(int item) {
-        if (iter == 0) {
-            first = new Node(null, null, item );
-            last = first;
-            iter += 1;
-        } else {
-            push(item);
-        }
+    public void add(int item) {
+        push(item);
     }
 
     @Override
-    int remove(int idx) throws NoSuchElementException {
+    public int remove(int idx) throws NoSuchElementException {
         if (iter <= idx) {
             throw new NoSuchElementException();
         } else {
-            if (idx == 0) {
-                return dequeu();
-            } else if (idx == iter - 1) {
+            if (idx == iter - 1) {
                 return pop();
             } else {
                 Node node = first;
                 for (int i = 0; i < idx; i++) {
                     node = node.next;
                 }
-                Node previous = node.prev;
-                Node following = node.next;
-                following.prev = previous;
-                previous.next = following;
-                int value = node.val;
-                node = null;
-                iter -= 1;
-                return value;
+                if (node == first) {
+                    return dequeu();
+                } else {
+                    Node previous = node.prev;       //Берутся узлы, связанные с текующим узлом, и связываются ссылками
+                    Node following = node.next;
+                    following.prev = previous;
+                    previous.next = following;
+                    int value = node.val;
+                    node = null;
+                    iter -= 1;
+                    return value;
+                }
             }
         }
     }
 
     @Override
-    int get(int idx) throws NoSuchElementException {
+    public int get(int idx) throws NoSuchElementException {
         if (iter <= idx) {
             throw new NoSuchElementException();
+        } else if (idx == iter - 1) {
+            return last.val;
         } else {
             Node next = first;
             for (int i = 0; i < idx; i++) {
@@ -120,7 +131,7 @@ public class MyLinkedList extends List implements Queue, Stack {
     }
 
     @Override
-    int size() {
+    public int size() {
         return iter;
     }
 }
