@@ -13,7 +13,7 @@ import java.util.NoSuchElementException;
  */
 public class MyArrayList extends List {
 
-    static int iter = 0;
+    int iter = 0;
 
     public int[] mass;
 
