@@ -17,7 +17,7 @@ public class MyArrayList extends List {
 
     private int[] list;
 
-    private static int DAFAULT_CAPACITY =0;
+    private static int DAFAULT_CAPACITY = 0;
 
     public MyArrayList() {
         list = new int[DAFAULT_CAPACITY];
@@ -30,9 +30,9 @@ public class MyArrayList extends List {
     @Override
     public void add(int item) {
         if (list.length <= size) {
-            int[] tempMass = list;
-            list = new int[tempMass.length  * 2 + 1];
-            System.arraycopy(tempMass, 0, list, 0, tempMass.length);
+            int[] newList = list;
+            list = new int[newList.length  * 2 + 1];
+            System.arraycopy(newList, 0, list, 0, newList.length);
             list[size] = item;
             size += 1;
         } else {
