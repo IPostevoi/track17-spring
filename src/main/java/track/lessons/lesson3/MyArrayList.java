@@ -30,9 +30,9 @@ public class MyArrayList extends List {
     @Override
     public void add(int item) {
         if (list.length <= size) {
-            int[] newList = list;
-            list = new int[newList.length  * 2 + 1];
-            System.arraycopy(newList, 0, list, 0, newList.length);
+            int[] oldList = list;
+            list = new int[oldList.length  * 2 + 1];
+            System.arraycopy(oldList, 0, list, 0, oldList.length);
             list[size] = item;
             size += 1;
         } else {
