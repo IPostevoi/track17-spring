@@ -16,9 +16,9 @@ public class MyLinkedList extends List implements Queue, Stack {
      * static - позволяет использовать Node без создания экземпляра внешнего класса
      */
 
-    private int iter = 0;
-    private Node last = null;
-    private Node first = null;
+    private int size = 0;
+    private Node last;
+    private Node first;
 
 
     @Override
@@ -34,21 +34,21 @@ public class MyLinkedList extends List implements Queue, Stack {
         }
         int value = first.val;
         first = node;
-        iter -= 1;
+        size -= 1;
         return value;
     }
 
     @Override
     public void push(int value) {
-        if (iter == 0) {
+        if (size == 0) {
             first = new Node(null, null, value);
             last = first;
-            iter += 1;
+            size += 1;
         } else {
             Node node = new Node(last, null, value);
             last.next = node;
             last = node;
-            iter += 1;
+            size += 1;
         }
     }
 
@@ -59,12 +59,12 @@ public class MyLinkedList extends List implements Queue, Stack {
             previous.next = null;
             int value = last.val;
             last = previous;
-            iter -= 1;
+            size -= 1;
             return value;
         } else {
             int value = last.val;
             last = null;
-            iter -= 1;
+            size -= 1;
             return value;
         }
     }
@@ -89,10 +89,10 @@ public class MyLinkedList extends List implements Queue, Stack {
 
     @Override
     public int remove(int idx) throws NoSuchElementException {
-        if (iter <= idx) {
+        if (size <= idx) {
             throw new NoSuchElementException();
         } else {
-            if (idx == iter - 1) {
+            if (idx == size - 1) {
                 return pop();
             } else {
                 Node node = first;
@@ -108,7 +108,7 @@ public class MyLinkedList extends List implements Queue, Stack {
                     previous.next = following;
                     int value = node.val;
                     node = null;
-                    iter -= 1;
+                    size -= 1;
                     return value;
                 }
             }
@@ -117,9 +117,9 @@ public class MyLinkedList extends List implements Queue, Stack {
 
     @Override
     public int get(int idx) throws NoSuchElementException {
-        if (iter <= idx) {
+        if (size <= idx) {
             throw new NoSuchElementException();
-        } else if (idx == iter - 1) {
+        } else if (idx == size - 1) {
             return last.val;
         } else {
             Node next = first;
@@ -132,6 +132,6 @@ public class MyLinkedList extends List implements Queue, Stack {
 
     @Override
     public int size() {
-        return iter;
+        return size;
     }
 }

@@ -13,38 +13,40 @@ import java.util.NoSuchElementException;
  */
 public class MyArrayList extends List {
 
-    private int iter = 0;
+    private int size;
 
-    private int[] mass;
+    private int[] list;
+
+    private static int DAFAULT_CAPACITY =0;
 
     public MyArrayList() {
-        mass = new int[0];
+        list = new int[DAFAULT_CAPACITY];
     }
 
     public MyArrayList(int capacity) {
-        mass = new int[capacity];
+        list = new int[capacity];
     }
 
     @Override
     public void add(int item) {
-        if (mass.length <= iter) {
-            int[] tempMass = mass;
-            mass = new int[tempMass.length  * 2 + 1];
-            System.arraycopy(tempMass, 0, mass, 0, tempMass.length);
-            mass[iter] = item;
-            iter += 1;
+        if (list.length <= size) {
+            int[] tempMass = list;
+            list = new int[tempMass.length  * 2 + 1];
+            System.arraycopy(tempMass, 0, list, 0, tempMass.length);
+            list[size] = item;
+            size += 1;
         } else {
-            mass[iter] = item;
-            iter += 1;
+            list[size] = item;
+            size += 1;
         }
     }
 
     @Override
     public int remove(int idx) throws NoSuchElementException {
-        if (idx < mass.length) {
-            iter -= 1;
-            int temp = mass[idx];
-            System.arraycopy(mass, idx + 1, mass, idx, mass.length - idx - 1);
+        if (idx < list.length) {
+            size -= 1;
+            int temp = list[idx];
+            System.arraycopy(list, idx + 1, list, idx, list.length - idx - 1);
             return temp;
         } else {
             throw new NoSuchElementException();
@@ -53,8 +55,8 @@ public class MyArrayList extends List {
 
     @Override
     public int get(int idx) throws NoSuchElementException {
-        if (idx < mass.length) {
-            return mass[idx];
+        if (idx < list.length) {
+            return list[idx];
         } else {
             throw new NoSuchElementException();
         }
@@ -62,6 +64,6 @@ public class MyArrayList extends List {
 
     @Override
     public int size() {
-        return iter;
+        return size;
     }
 }
