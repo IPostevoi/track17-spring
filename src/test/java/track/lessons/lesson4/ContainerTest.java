@@ -1,6 +1,7 @@
 package track.lessons.lesson4;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,6 +20,7 @@ import java.util.List;
 
 public class ContainerTest {
 
+    //Создание объекта Gear по id
     @Test
     public void gearTestId() throws Exception {
         File configFile = new File("/home/bakla410/Desktop/TechnotrackJava/track17/src/main/resources/config.json");
@@ -33,7 +35,7 @@ public class ContainerTest {
         }
     }
 
-
+    //Создание объекта Engine по id
     @Test
     public void engineTestId() throws Exception {
         File configFile = new File("/home/bakla410/Desktop/TechnotrackJava/track17/src/main/resources/config.json");
@@ -48,6 +50,7 @@ public class ContainerTest {
         }
     }
 
+    //Создание объекта Car по id
     @Test
     public void carTestId() throws Exception {
         File configFile = new File("/home/bakla410/Desktop/TechnotrackJava/track17/src/main/resources/config.json");
@@ -63,6 +66,7 @@ public class ContainerTest {
         }
     }
 
+    //Создание объекта Car по имени
     @Test
     public void carTestName() throws Exception {
         File configFile = new File("/home/bakla410/Desktop/TechnotrackJava/track17/src/main/resources/config.json");
@@ -78,21 +82,7 @@ public class ContainerTest {
         }
     }
 
-    @Test
-    public void gearTestRef() throws Exception {
-        File configFile = new File(
-                "/home/bakla410/Desktop/TechnotrackJava/track17/src/main/resources/testConfigRef.json");
-
-        JsonConfigReader reader = new JsonConfigReader();
-        try {
-            List<Bean> beans = reader.parseBeans(configFile);
-            Container container = new Container(beans);
-            Gear gear= (Gear) container.getByClass("track.container.beans.Gear");
-            Assert.assertTrue(gear.getCount() == 1000);
-        } catch (InvalidConfigurationException ex) {
-        }
-    }
-
+    //В данном объекте класса Car создаются поля со значением VAL
     @Test
     public void carTestAnotherRef() throws Exception {
         File configFile = new File(
@@ -103,12 +93,13 @@ public class ContainerTest {
             List<Bean> beans = reader.parseBeans(configFile);
             Container container = new Container(beans);
             Car car = (Car) container.getById("carBean");
-            Assert.assertTrue(car.getGear().getCount() == 1000);
-            Assert.assertTrue(car.getEngine().getPower() == 1000);
+            Assert.assertTrue(car.getGear().getCount() == 2018);
+            Assert.assertTrue(car.getEngine().getPower() == 2017);
         } catch (InvalidConfigurationException ex) {
         }
     }
 
+    //В случае, если значения ссылаются друг на друга циклично, бросается ошибка InvalidreferencesException
     @Test
     public void testCircleRef() throws Exception {
         File configFile = new File(
@@ -120,13 +111,15 @@ public class ContainerTest {
             Container container = new Container(beans);
             Car car = (Car) container.getById("carBean");
         } catch (InvalidConfigurationException ex) {
-        }
-        catch (InvalidReferencesException ex) {
+
+        } catch (InvalidReferencesException ex) {
             String message = "Caught circle references!";
             Assert.assertTrue(message == "Caught circle references!");
         }
     }
 
+
+    //Повторно созданный объект должен браться из контейнера, а не создаваться вновь
     @Test
     public void singletonTest() throws Exception {
         File configFile = new File(
@@ -139,6 +132,8 @@ public class ContainerTest {
             Car car1 = (Car) container.getById("carBean");
             Car car2 = (Car) container.getById("carBean");
             Assert.assertTrue(car1 == car2);
-        } catch (InvalidConfigurationException ex) {}
+        } catch (InvalidConfigurationException ex) {
+
+        }
     }
 }

@@ -11,82 +11,122 @@ import track.container.config.InvalidReferencesException;
 import track.container.config.Property;
 import track.container.config.ValueType;
 
-/**
- * Основной класс контейнера
- * У него определено 2 публичных метода, можете дописывать свои методы и конструкторы
- */
+
 public class Container {
 
     private Map<String, Object> objByName = new HashMap<>();
     private Map<String, Object> objByClassName = new HashMap<>();
     private Map<String, Bean> beansId = new HashMap<>();    //Таблицы соответствий Id/Имени класса и бина
     private Map<String, Bean> beansName = new HashMap<>();
-    private Map.Entry<String, Property> firstEntry = null;  //Переменная, сохраняющая ссылку на первую таблицу с  properties, отслеживает циклические ссылки
+    private Map.Entry<String, Property> firstEntry = null;
+    //Переменная, сохраняющая ссылку на первую таблицу с  properties, отслеживает циклические ссылки
 
 
     // Реализуйте этот конструктор, используется в тестах!
     public Container(List<Bean> beans) {
+
         for (Bean bean: beans) {
             beansId.put(bean.getId(), bean);
             beansName.put(bean.getClassName(), bean);
         }
     }
-    /**
-     *  Вернуть объект по имени бина из конфига
-     *  Например, Car car = (Car) container.getById("carBean")
-     */
+
+    /* Создает объект по переданному бину, инициализирует его поля, если поле не примитивного типа, вызывается
+     * рекрсивно для бина класса поля */
     private Object createObject(Bean bean) throws Exception {
+
         String className = bean.getClassName();
         Class clazz = Class.forName(className);
         Field[] fields = clazz.getDeclaredFields();
         Object obj = clazz.newInstance();
         for (Field field: fields) {
             field.setAccessible(true);
-            if (field.getType().isPrimitive()) {                                       //если поле имеет примитивный тип
-                for (Map.Entry<String, Property> entry: bean.getProperties().entrySet()) {
-                    setFieldValue(entry, field, obj);
+            if (field.getType().isPrimitive()) {                    //если поле имеет тип примитива
+                for (Map.Entry<String, Property> fieldProperties: bean.getProperties().entrySet()) {
+                    setFieldPrimitiveValue(clazz, fieldProperties, field, obj);
                 }
-            } else {                    //если поле имеет тип класс - создаем объект класса по ссылке и присваиваем полю
-                Object fieldObject = createObject(beansName.get(field.getType().getCanonicalName()));
-                field.set(obj, fieldObject);
+            } else {                 //если поле имеет тип класс - создаем объект класса по ссылке и присваиваем полю
+                for (Map.Entry<String, Property> fieldProperties: bean.getProperties().entrySet()) {
+                    if (fieldProperties.getValue().getName().equals(field.getName())) {
+                        setFieldClassValue(fieldProperties, field, obj);
+                    }
+                }
             }
         }
         return obj;
     }
 
-    private void setFieldValue(Map.Entry<String, Property> entry, Field field, Object obj) throws Exception {
+    // Получает имя сеттера
+    private String getSetterName(Field field) {
+
+        String fieldName = field.getName();
+        String setterName = "set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+        return setterName;
+    }
+
+
+    // Устанавливает значение в поле примитивного типа
+    private void setFieldPrimitiveValue(Class clazz, Map.Entry<String, Property> fieldProperties, Field field, Object obj) throws Exception {
+
         if (firstEntry == null) {
-            firstEntry = entry;
+            firstEntry = fieldProperties;  // При первом вызове устанавливает значение переданной таблицы properties
         } else {
-            if (firstEntry == entry) {           //Совпадение таблиц, переданных первый раз и впоследствиии обозначает появление циклической зависимости ссылок
+            if (firstEntry == fieldProperties) {
+                //Совпадение таблицы properties с переданной в первый раз - обозначает зацикливание ссылки
                 throw new InvalidReferencesException("Circle references!");
             }
         }
-
         //Проверка является ли поле примитивом или же содержит ссылку на другой бин
-        if (entry.getValue().getType() == ValueType.VAL) {
-            setFieldValValue(entry, field, obj);
-            firstEntry = null;                                                      //Обнуление переменной класса
+        if (fieldProperties.getValue().getType() == ValueType.VAL) {
+            setFieldValValue(clazz, fieldProperties, field, obj);
+            firstEntry = null;                         //Обнуление переменной класса
         } else {
-            setFieldRefValue(entry, field, obj);
+            setFieldRefValue(clazz, fieldProperties, field, obj);
         }
     }
 
-    private void setFieldValValue(Map.Entry<String, Property> entry, Field field, Object obj) throws Exception {
 
-        field.set(obj, Integer.parseInt(entry.getValue().getValue()));  //Берет из словаря значение(Класс Property) и получает его значение Value
+    private void setFieldValValue(Class clazz, Map.Entry<String, Property> fieldProperties, Field field, Object obj) throws Exception {
+
+        Method method = clazz.getMethod(getSetterName(field), field.getType());
+        method.invoke(obj, Integer.parseInt(fieldProperties.getValue().getValue()));
     }
 
-    private void setFieldRefValue(Map.Entry<String, Property> entry, Field field, Object obj) throws Exception {
 
-        Map<String, Property> refProperties = beansId.get(entry.getValue().getValue()).getProperties(); //Получает таблицу Porperties для класса, на который ведет ссылка
-        for (Map.Entry<String, Property> entryField : refProperties.entrySet()) {   //Получает из таблицы выше итерируемую таблицу
-            setFieldValue(entryField, field, obj);
+    private void setFieldRefValue(Class clazz, Map.Entry<String, Property> fieldProperties, Field field, Object obj) throws Exception {
+
+        //Получает таблицу Porperties для класса, на который ведет ссылка, получает из таблицы итерируемую таблицу
+        Map<String, Property> refProperties = beansId.get(fieldProperties.getValue().getValue()).getProperties();
+        for (Map.Entry<String, Property> entryField : refProperties.entrySet()) {
+            setFieldPrimitiveValue(clazz, entryField, field, obj);
+        }
+    }
+
+
+    //Устанавливает значение в поле не примитивного типа
+    private void setFieldClassValue(Map.Entry<String, Property> fieldProperties, Field field, Object obj) throws Exception {
+
+        if (fieldProperties.getValue().getType() == ValueType.REF) {
+            if (objByName.containsKey(fieldProperties.getValue().getValue())) { //Присваивает полю существующий объект
+                field.set(obj, objByName.get(fieldProperties.getValue().getValue()));
+            } else {                                                            //Создает новый объект
+                Object fieldObject = createObject(beansName.get(field.getType().getCanonicalName()));
+                field.set(obj, fieldObject);
+            }
+        } else {
+            Class fieldClazz = Class.forName(field.getType().getCanonicalName());
+            Object fieldObj = fieldClazz.newInstance();                            //Создаем объект типа поля
+            Field[] fields = fieldClazz.getDeclaredFields();       //инициализируем значениями, переданными в properties
+            for (Field fieldField: fields) {
+                setFieldValValue(fieldClazz, fieldProperties, fieldField, fieldObj);
+            }
+            field.set(obj, fieldObj);
         }
     }
 
 
     public Object getById(String id) throws Exception {
+
         if (objByName.containsKey(id)) {
             return objByName.get(id);
         } else {
@@ -96,11 +136,8 @@ public class Container {
         }
     }
 
-    /**
-     * Вернуть объект по имени класса
-     * Например, Car car = (Car) container.getByClass("track.container.beans.Car")
-     */
     public Object getByClass(String className) throws Exception {
+
         if (objByClassName.containsKey(className)) {
             return objByClassName.get(className);
         } else {
