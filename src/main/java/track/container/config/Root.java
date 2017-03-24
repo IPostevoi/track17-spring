@@ -8,9 +8,9 @@ public class Root {
     public Root() {
     }
 
-    //public Root(List<Bean> beans) {
-        //this.beans = beans;
-    //}
+    public Root(List<Bean> beans) {
+        this.beans = beans;
+    }
 
     public List<Bean> getBeans() {
         return beans;
