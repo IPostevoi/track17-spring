@@ -1,0 +1,42 @@
+{
+  "beans": [
+    {
+      "id": "carBean",
+      "className": "track.container.beans.Car",
+      "properties": {
+        "gear": {
+          "name": "gear",
+          "value": 2018,
+          "type": "VAL"
+        },
+        "engine": {
+          "name": "engine",
+          "value": "engineBean",
+          "type": "REF"
+        }
+      }
+    },
+    {
+      "id": "gearBean",
+      "className": "track.container.beans.Gear",
+      "properties": {
+        "count": {
+          "name": "count",
+          "value": 2017,
+          "type": "VAL"
+        }
+      }
+    },
+    {
+      "id": "engineBean",
+      "className": "track.container.beans.Engine",
+      "properties": {
+        "power": {
+          "name": "power",
+          "value": "gearBean",
+          "type": "REF"
+        }
+      }
+    }
+  ]
+}

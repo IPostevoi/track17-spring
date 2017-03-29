@@ -1,0 +1,16 @@
+{
+  "id": "carBean",
+  "className": "track.container.beans.Car",
+  "properties": {
+    "gear": {
+      "name": "gear",
+      "value": "gearBean",
+      "type": "REF"
+    },
+    "engine": {
+      "name": "engine",
+      "value": "engineBean",
+      "type": "REF"
+    }
+  }
+}
