@@ -38,7 +38,7 @@ public class Container {
         Object obj = clazz.newInstance();
         for (Field field: fields) {
             field.setAccessible(true);
-            if (ClassUtils.isPrimitiveOrWrapper(field.getType()) || String.class == field.getType()) {                    //если поле имеет тип примитива
+            if (ClassUtils.isPrimitiveOrWrapper(field.getType()) || String.class == field.getType()) {
                 for (Map.Entry<String, Property> fieldProperties: bean.getProperties().entrySet()) {
                     setFieldPrimitiveValue(clazz, fieldProperties, field, obj);
                 }
