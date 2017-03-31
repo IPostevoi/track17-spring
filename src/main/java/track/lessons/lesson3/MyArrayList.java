@@ -1,5 +1,7 @@
 package track.lessons.lesson3;
 
+import java.lang.*;
+
 import java.util.NoSuchElementException;
 
 /**
@@ -11,31 +13,57 @@ import java.util.NoSuchElementException;
  */
 public class MyArrayList extends List {
 
-    public MyArrayList() {
+    private int size;
 
+    private int[] list;
+
+    private static int DAFAULT_CAPACITY = 0;
+
+    public MyArrayList() {
+        list = new int[DAFAULT_CAPACITY];
     }
 
     public MyArrayList(int capacity) {
-
+        list = new int[capacity];
     }
 
     @Override
-    void add(int item) {
-
+    public void add(int item) {
+        if (list.length <= size) {
+            int[] oldList = list;
+            list = new int[oldList.length  * 2 + 1];
+            System.arraycopy(oldList, 0, list, 0, oldList.length);
+            list[size] = item;
+            size += 1;
+        } else {
+            list[size] = item;
+            size += 1;
+        }
     }
 
     @Override
-    int remove(int idx) throws NoSuchElementException {
-        return 0;
+    public int remove(int idx) throws NoSuchElementException {
+        if (idx < list.length) {
+            size -= 1;
+            int temp = list[idx];
+            System.arraycopy(list, idx + 1, list, idx, list.length - idx - 1);
+            return temp;
+        } else {
+            throw new NoSuchElementException();
+        }
     }
 
     @Override
-    int get(int idx) throws NoSuchElementException {
-        return 0;
+    public int get(int idx) throws NoSuchElementException {
+        if (idx < list.length) {
+            return list[idx];
+        } else {
+            throw new NoSuchElementException();
+        }
     }
 
     @Override
-    int size() {
-        return 0;
+    public int size() {
+        return size;
     }
 }

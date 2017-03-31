@@ -7,6 +7,10 @@ import java.util.Map;
 import org.apache.commons.lang3.ClassUtils;
 
 import track.container.config.*;
+import track.container.config.Bean;
+import track.container.config.InvalidReferencesException;
+import track.container.config.Property;
+import track.container.config.ValueType;
 
 
 public class Container {
@@ -18,9 +22,8 @@ public class Container {
     private Map.Entry<String, Property> firstEntry = null;
     //Переменная, сохраняющая ссылку на первую таблицу с  properties, отслеживает циклические ссылки
 
-
     // Реализуйте этот конструктор, используется в тестах!
-    public Container(List<Bean> beans) {
+    public Container(List<Bean> beans) throws Exception {
 
         for (Bean bean: beans) {
             beansId.put(bean.getId(), bean);

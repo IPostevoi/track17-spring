@@ -1,6 +1,8 @@
 package track.lessons.lesson1;
 
 import java.io.File;
+import java.io.*;
+
 
 /**
  * Задание 1: Реализовать два метода
@@ -23,6 +25,16 @@ import java.io.File;
  */
 public class CountWords {
 
+
+    public static boolean isNumeric(String str) {
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException er) {
+            return false;
+        }
+    }
+
     /**
      * Метод на вход принимает объект File, изначально сумма = 0
      * Нужно пройти по всем строкам файла, и если в строке стоит целое число,
@@ -31,7 +43,16 @@ public class CountWords {
      * @return - целое число - сумма всех чисел из файла
      */
     public long countNumbers(File file) throws Exception {
-        return 0;
+        String dirPath = file.getAbsolutePath();
+        BufferedReader br = new BufferedReader( new FileReader(dirPath));
+        String line;
+        long sum = 0;
+        while ((line = br.readLine()) != null) {
+            if (isNumeric(line)) {
+                sum += Integer.parseInt(line);
+            }
+        }
+        return sum;
     }
 
 
@@ -43,7 +64,22 @@ public class CountWords {
      * @return - результирующая строка
      */
     public String concatWords(File file) throws Exception {
-        return null;
-    }
 
+        String dirPath = file.getAbsolutePath();
+        BufferedReader br = new BufferedReader(new FileReader(dirPath));
+        String line;
+        StringBuilder string = new StringBuilder();
+
+        while ((line = br.readLine()) != null) {
+
+            if (!isNumeric(line) && !line.isEmpty()) {
+                string.append(line);
+                string.append(" ");
+            }
+        }
+        br.close();
+
+        return string.toString().trim();
+    }
 }
+
