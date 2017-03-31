@@ -4,12 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.lang.reflect.*;
 import java.util.Map;
+import org.apache.commons.lang3.ClassUtils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import track.container.config.Bean;
-import track.container.config.InvalidReferencesException;
-import track.container.config.Property;
-import track.container.config.ValueType;
+import track.container.config.*;
 
 
 public class Container {
@@ -32,7 +29,7 @@ public class Container {
     }
 
     /* Создает объект по переданному бину, инициализирует его поля, если поле не примитивного типа, вызывается
-     * рекрсивно для бина класса поля */
+     * рекурсивно для бина класса поля */
     private Object createObject(Bean bean) throws Exception {
 
         String className = bean.getClassName();
@@ -41,7 +38,7 @@ public class Container {
         Object obj = clazz.newInstance();
         for (Field field: fields) {
             field.setAccessible(true);
-            if (field.getType().isPrimitive()) {                    //если поле имеет тип примитива
+            if (ClassUtils.isPrimitiveOrWrapper(field.getType()) || String.class == field.getType()) {                    //если поле имеет тип примитива
                 for (Map.Entry<String, Property> fieldProperties: bean.getProperties().entrySet()) {
                     setFieldPrimitiveValue(clazz, fieldProperties, field, obj);
                 }
@@ -89,8 +86,38 @@ public class Container {
     private void setFieldValValue(Class clazz, Map.Entry<String, Property> fieldProperties, Field field, Object obj) throws Exception {
 
         Method method = clazz.getMethod(getSetterName(field), field.getType());
-        method.invoke(obj, Integer.parseInt(fieldProperties.getValue().getValue()));
+
+        switch (field.getType().getName()) {
+            case "int":
+                method.invoke(obj, Integer.parseInt(fieldProperties.getValue().getValue()));
+                break;
+            case "double":
+                method.invoke(obj, Double.parseDouble(fieldProperties.getValue().getValue()));
+                break;
+            case "byte":
+                method.invoke(obj, Byte.parseByte(fieldProperties.getValue().getValue()));
+                break;
+            case "short":
+                method.invoke(obj, Short.parseShort(fieldProperties.getValue().getValue()));
+                break;
+            case "long":
+                method.invoke(obj, Long.parseLong(fieldProperties.getValue().getValue()));
+                break;
+            case "float":
+                method.invoke(obj, Double.parseDouble(fieldProperties.getValue().getValue()));
+                break;
+            case "boolean":
+                method.invoke(obj, Boolean.parseBoolean(fieldProperties.getValue().getValue()));
+                break;
+            default:
+                method.invoke(obj, fieldProperties.getValue().getValue());
+                break;
+        }
     }
+
+
+
+
 
 
     private void setFieldRefValue(Class clazz, Map.Entry<String, Property> fieldProperties, Field field, Object obj) throws Exception {
