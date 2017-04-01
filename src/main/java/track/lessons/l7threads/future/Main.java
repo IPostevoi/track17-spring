@@ -1,7 +1,5 @@
 package track.lessons.l7threads.future;
 
-//import java.awt.Image;
-import track.lessons.l7threads.future.Image;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -35,8 +33,8 @@ public class Main {
 
     static class Network {
         public static Image loadImage() {
-            byte[] data = new byte[] {1, 2, 3};
-            ImageInfo info = new ImageInfo(100 ,100, "png");
+            byte[] data = new byte[]{1, 2, 3};
+            ImageInfo info = new ImageInfo(100, 100, "png");
             return new Image(data, info);
         }
 
