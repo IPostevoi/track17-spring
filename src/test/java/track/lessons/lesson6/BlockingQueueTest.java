@@ -3,10 +3,11 @@ package track.lessons.lesson6;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
-
+import java.util.concurrent.TimeUnit;
 /**
  * Created by bakla410 on 31.03.17.
  */
+
 public class BlockingQueueTest {
 
     @Test
@@ -14,7 +15,10 @@ public class BlockingQueueTest {
         final int item1 = 1;
         final int item2 = 2;
 
-        BlockingQueueClass blockingQueue = new BlockingQueueClass(7);
+
+
+
+        BlockingQueueInst<Integer> blockingQueue = new BlockingQueueInst(7);
 
         Thread thread0 = new Thread(() -> blockingQueue.poll(20));
         thread0.start();
